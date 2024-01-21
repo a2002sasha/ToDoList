@@ -8,7 +8,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form class="post-form" asp-action="Edit" method="post"
+        <form class="put-form" asp-action="Edit" method="post"
               asp-route-selectedTaskName="@(Model.FilterViewModel!.SelectedTaskName)"
               asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
               asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
@@ -58,7 +58,7 @@
                 <input type="submit" value="Зберегти" class="btn btn-primary" />
             </div>
         </form> <br />
-        <a asp-action="Index" method="get"
+        <a asp-action="Index"
            asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
            asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
            asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"

@@ -53,7 +53,7 @@
 
     <div class="row">
         <div class="col-4">
-            <form class="post-form" asp-action="Delete" method="post"
+            <form class="delete-form" asp-action="Delete" method="post"
                   asp-route-selectedTaskName="@(Model.FilterViewModel!.SelectedTaskName)"
                   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
                   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
@@ -63,7 +63,7 @@
             </form>
         </div>
         <div class="col-4">
-            <a asp-action="Index" method="get"
+            <a asp-action="Index"
                asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
                asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
                asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"

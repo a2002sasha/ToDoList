@@ -71,6 +71,10 @@ input::-moz-focus-inner {
 		box-sizing: border-box;
 	}
 
+	.text-danger{
+		color: red;
+	}
+
 	*, *:before, *:after {
 		box-sizing: inherit;
 	}

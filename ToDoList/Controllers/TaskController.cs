@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Configuration;
 using ToDoList.DataAccess.Enums.Translations;
 using ToDoList.Enums;
@@ -23,13 +24,13 @@ namespace ToDoList.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(FilterViewModel filterViewModel, SortState sortOrder = SortState.NameAsc)
+        public async Task<IActionResult> Index(FilterViewModel filterViewModel, SortState sortOrder = SortState.NameAsc)
         {
             var username = HttpContext.User.Identity?.Name;
 
             var filteredTasks = _taskService.GetFilteredTasks(username!, filterViewModel);
 
-            var sortedAndFilteredTasks = _taskService.GetSortedTasks(filteredTasks, sortOrder);
+            var sortedAndFilteredTasks = await _taskService.GetSortedTasks(filteredTasks, sortOrder).ToListAsync();
 
             var userTasks = _mapper.Map<List<TaskViewModel>>(sortedAndFilteredTasks);
 
@@ -46,7 +47,7 @@ namespace ToDoList.Controllers
         }
 
         [HttpGet]
-        public ActionResult Create(FilterViewModel filterViewModel)
+        public IActionResult Create(FilterViewModel filterViewModel)
         {
             var model = new TaskViewModel { FilterViewModel = filterViewModel };
 
@@ -58,21 +59,26 @@ namespace ToDoList.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(TaskViewModel model, FilterViewModel filterViewModel, SortState sortOrder)
+        public async Task<IActionResult> Create(TaskViewModel model, FilterViewModel filterViewModel, SortState sortOrder)
         {
             if (ModelState.IsValid)
             {
                 var task = _mapper.Map<DataAccess.Model.Task>(model);
 
                 var username = HttpContext.User.Identity?.Name;
-                _taskService.Create(task, username!);
 
-                return RedirectToAction("Index", new
+                var result = await _taskService.CreateAsync(task, username!);
+
+                return Json(new
                 {
-                    selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
-                    selectedTaskName = filterViewModel.SelectedTaskName,
-                    selectedTaskState = filterViewModel.SelectedTaskState,
-                    sortOrder = sortOrder
+                    Success = result,
+                    Href = Url.Action("Index", new
+                    {
+                        selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
+                        selectedTaskName = filterViewModel.SelectedTaskName,
+                        selectedTaskState = filterViewModel.SelectedTaskState,
+                        sortOrder = sortOrder
+                    })
                 });
             }
 
@@ -83,7 +89,7 @@ namespace ToDoList.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(Guid? id, FilterViewModel filterViewModel)
+        public async Task<IActionResult> Edit(Guid? id, FilterViewModel filterViewModel)
         {
             if (id == null)
             {
@@ -92,7 +98,7 @@ namespace ToDoList.Controllers
 
             var username = HttpContext.User.Identity?.Name;
 
-            var userTask = _taskService.GetTaskById(username!, id);
+            var userTask = await _taskService.GetTaskById(username!, id).FirstOrDefaultAsync();
 
             if (userTask == null)
             {
@@ -109,8 +115,8 @@ namespace ToDoList.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public ActionResult Edit(Guid id, TaskViewModel model, FilterViewModel filterViewModel, SortState sortOrder)
+        [HttpPut]
+        public async Task<IActionResult> Edit(Guid id, TaskViewModel model, FilterViewModel filterViewModel, SortState sortOrder)
         {
             if (id != model.Id)
             {
@@ -121,14 +127,18 @@ namespace ToDoList.Controllers
             {
                 var task = _mapper.Map<DataAccess.Model.Task>(model);
 
-                _taskService.Edit(task);
+                var result = await _taskService.EditAsync(task);
 
-                return RedirectToAction("Index", new
+                return Json(new
                 {
-                    selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
-                    selectedTaskName = filterViewModel.SelectedTaskName,
-                    selectedTaskState = filterViewModel.SelectedTaskState,
-                    sortOrder = sortOrder
+                    Success = result,
+                    Href = Url.Action("Index", new
+                    {
+                        selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
+                        selectedTaskName = filterViewModel.SelectedTaskName,
+                        selectedTaskState = filterViewModel.SelectedTaskState,
+                        sortOrder = sortOrder
+                    })
                 });
             }
 
@@ -139,7 +149,7 @@ namespace ToDoList.Controllers
         }
 
         [HttpGet]
-        public ActionResult Delete(Guid? id, FilterViewModel filterViewModel)
+        public async Task<IActionResult> Delete(Guid? id, FilterViewModel filterViewModel)
         {
             if (id == null)
             {
@@ -148,7 +158,7 @@ namespace ToDoList.Controllers
 
             var username = HttpContext.User.Identity?.Name;
 
-            var userTask = _taskService.GetTaskById(username!, id);
+            var userTask = await _taskService.GetTaskById(username!, id).FirstOrDefaultAsync();
 
             if (userTask == null)
             {
@@ -168,17 +178,21 @@ namespace ToDoList.Controllers
             return View(model);
         }
 
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(Guid id, FilterViewModel filterViewModel, SortState sortOrder)
+        [HttpDelete, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(Guid id, FilterViewModel filterViewModel, SortState sortOrder)
         {
-            _taskService.Remove(id);
+            var result = await _taskService.RemoveAsync(id);
 
-            return RedirectToAction("Index", new
+            return Json(new
             {
-                selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
-                selectedTaskName = filterViewModel.SelectedTaskName,
-                selectedTaskState = filterViewModel.SelectedTaskState,
-                sortOrder = sortOrder
+                Success = result,
+                Href = Url.Action("Index", new
+                {
+                    selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
+                    selectedTaskName = filterViewModel.SelectedTaskName,
+                    selectedTaskState = filterViewModel.SelectedTaskState,
+                    sortOrder = sortOrder
+                })
             });
         }
     }

@@ -21,12 +21,12 @@ namespace ToDoList.Service
 				.Include(u => u.User);
 		}
 
-        public DataAccess.Model.Task GetTaskById(string username, Guid? id)
+        public IQueryable<DataAccess.Model.Task> GetTaskById(string username, Guid? id)
         {
-            return GetTasksByUser(username).FirstOrDefault(u => u.Id == id);
+            return GetTasksByUser(username).Where(u => u.Id == id);
         }
 
-        public void Create(DataAccess.Model.Task task, string username)
+        public async Task<bool> CreateAsync(DataAccess.Model.Task task, string username)
 		{
 
 			var user = _context.Users.FirstOrDefault(t => t.UserName == username);
@@ -42,10 +42,12 @@ namespace ToDoList.Service
 				TaskState = task.TaskState,
 			});
 
-			_context.SaveChanges();
+			int result = await _context.SaveChangesAsync();
+
+			return result > 0;
 		}
 
-		public void Edit(DataAccess.Model.Task task)
+		public async Task<bool> EditAsync(DataAccess.Model.Task task)
 		{
 			var userTask = _context.Tasks.FirstOrDefault(ut => ut.Id == task.Id);
 
@@ -56,15 +58,19 @@ namespace ToDoList.Service
 			userTask.PriorityLevel = task.PriorityLevel;
 			userTask.TaskState = task.TaskState;
 
-			_context.SaveChanges();
+			int result = await _context.SaveChangesAsync();
+
+			return result > 0;
 		}
 
-		public void Remove(Guid? taskId)
+		public async Task<bool> RemoveAsync(Guid? taskId)
 		{
 			var task = _context.Tasks.FirstOrDefault(t => t.Id == taskId);
 			_context.Remove(task);
 
-			_context.SaveChanges();
+			int result = await _context.SaveChangesAsync();
+
+			return result > 0; ;
 		}
 
 		public IQueryable<DataAccess.Model.Task> GetFilteredTasks(string username, FilterViewModel filterViewModel)

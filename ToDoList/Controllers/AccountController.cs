@@ -20,7 +20,7 @@ namespace ToDoList.Controllers
         }
 
         [HttpGet]
-        public ActionResult Login(string returnUrl)
+        public IActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
             var model = new LoginViewModel();
@@ -28,7 +28,7 @@ namespace ToDoList.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -49,14 +49,14 @@ namespace ToDoList.Controllers
         }
 
         [HttpGet]
-        public ActionResult Registration()
+        public IActionResult Registration()
         {
             var model = new RegistrationViewModel();
             return View(model);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Registration(RegistrationViewModel model)
+        public async Task<IActionResult> Registration(RegistrationViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace ToDoList.Controllers
         }
 
         [Authorize]
-        public async Task<ActionResult> Logout()
+        public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
