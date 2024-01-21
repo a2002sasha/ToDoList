@@ -1,0 +1,119 @@
+﻿@model ToDoList.ViewModel.TaskViewModel
+@using ToDoList.DataAccess.Enums.Translations
+@using ToDoList.DataAccess.Model
+
+@{
+	ViewBag.Title = "Мої завдання";
+}
+
+<form class="get-form" method="get">
+	<div class="form-inline">
+		<label>Назва завдання: </label>
+		<input asp-for="FilterViewModel!.SelectedTaskName" value="@Model.FilterViewModel!.SelectedTaskName" class="form-control" />
+		<br />
+		<label>Пріоритет завдання: </label>
+		<select asp-for="FilterViewModel!.SelectedPriorityLevel" class="form-control">
+			<option value="0">Не вибрано</option>
+			<option value="1">Немає</option>
+			<option value="2">Низький</option>
+			<option value="3">Середній</option>
+			<option value="4">Високий</option>
+		</select> <br />
+		<label>Статус завдання: </label>
+		<select asp-for="FilterViewModel!.SelectedTaskState" class="form-control">
+			<option value="0">Не вибрано</option>
+			<option value="1">Створено</option>
+			<option value="2">В процесі</option>
+			<option value="3">Виконано</option>
+		</select>
+		<br />
+		<input type="submit" value="Фільтр" class="btn btn-outline-dark" />
+	</div>
+</form>
+
+<h3>Завдання на виконання</h3>
+
+<a asp-action="Create" method="get"
+   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">
+	<input type="button" value="Додати завдання" />
+</a>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				<a asp-action="Index"
+				   asp-route-sortOrder="@(Model.SortViewModel.NameSort)"
+				   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+				   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+				   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">Назва</a>
+			</th>
+			<th>
+				<a asp-action="Index"
+				   asp-route-sortOrder="@(Model.SortViewModel.DescriptionSort)"
+				   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+				   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+				   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">Опис</a>
+			</th>
+			<th>
+				<a asp-action="Index"
+				   asp-route-sortOrder="@(Model.SortViewModel.PriorityLevelSort)"
+				   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+				   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+				   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">Пріоритет</a>
+			</th>
+			<th>
+				<a asp-action="Index"
+				   asp-route-sortOrder="@(Model.SortViewModel.TaskStateSort)"
+				   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+				   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+				   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">Статус завдання</a>
+			</th>
+			<th>
+				<a asp-action="Index"
+				   asp-route-sortOrder="@(Model.SortViewModel.DateSort)"
+				   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+				   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+				   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">Дата виконання</a>
+			</th>
+			<th>
+				<a asp-action="Index"
+				   asp-route-sortOrder="@(Model.SortViewModel.TimeSort)"
+				   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+				   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+				   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">Час виконання</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var u in Model.UserTasks)
+		{
+			<tr>
+				<th>@u.Name</th>
+				<th>@u.Description</th>
+				<th>@PriorityLevelTranslator.Translate(u.PriorityLevel)</th>
+				<th>@TaskStateTranslator.Translate(u.TaskState)</th>
+				<th>@u.EndDate</th>
+				<th>@u.EndTime</th>
+				<th>
+					@if (TaskStateTranslator.Translate(u.TaskState) != "Виконано")
+					{
+						<b><a asp-action="Edit" asp-route-id="@u.Id"
+							   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+							   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+							   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">Редагувати</a> |
+						</b>
+					}
+					<b>
+						<a asp-action="Delete" asp-route-id="@u.Id"
+						   asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+						   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+						   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)">Видалити</a>
+					</b>
+				</th>
+			</tr>
+		}
+	</tbody>
+</table>
