@@ -40,7 +40,7 @@ builder.Services.ConfigureApplicationCookie(option =>
 builder.Services.AddMvc(options =>
 {
 	options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-}).AddSessionStateTempDataProvider();
+});
 
 var app = builder.Build();
 

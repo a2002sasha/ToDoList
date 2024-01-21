@@ -41,7 +41,7 @@ namespace ToDoList.Controllers
                 UserTasks = userTasks
             };
 
-			TempData["SortOrder"] = sortOrder;
+            HttpContext.Session.SetString("SortOrder", ((int)sortOrder).ToString());
 
 			return View(viewModel);
         }
@@ -51,7 +51,7 @@ namespace ToDoList.Controllers
         {
             var model = new TaskViewModel { FilterViewModel = filterViewModel };
 
-			var sortOrder = (SortState)TempData["SortOrder"];
+			var sortOrder = (SortState)Convert.ToInt32(HttpContext.Session.GetString("SortOrder"));
 
             ViewBag.SortOrder = sortOrder;
 
@@ -108,7 +108,7 @@ namespace ToDoList.Controllers
             var model = _mapper.Map<TaskViewModel>(userTask);
             model.FilterViewModel = filterViewModel;
 
-            var sortOrder = (SortState)TempData["SortOrder"];
+            var sortOrder = (SortState)Convert.ToInt32(HttpContext.Session.GetString("SortOrder"));
 
             ViewBag.SortOrder = sortOrder;
 
@@ -171,7 +171,7 @@ namespace ToDoList.Controllers
             model.TranslatedTaskState = TaskStateTranslator.Translate(model.TaskState);
             model.FilterViewModel = filterViewModel;
 
-            var sortOrder = (SortState)TempData["SortOrder"];
+            var sortOrder = (SortState)Convert.ToInt32(HttpContext.Session.GetString("SortOrder"));
 
             ViewBag.SortOrder = sortOrder;
 
