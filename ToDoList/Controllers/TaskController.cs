@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDoList.Configuration;
 using ToDoList.DataAccess.Enums.Translations;
-using ToDoList.Enums;
 using ToDoList.Service;
 using ToDoList.ViewModel;
 
@@ -24,42 +23,38 @@ namespace ToDoList.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(FilterViewModel filterViewModel, SortState sortOrder = SortState.NameAsc)
+        public async Task<IActionResult> Index(FilterViewModel filterViewModel, SortViewModel sortViewModel)
         {
+            sortViewModel.InitializeSortProperties();
+
             var username = HttpContext.User.Identity?.Name;
 
             var filteredTasks = _taskService.GetFilteredTasks(username!, filterViewModel);
 
-            var sortedAndFilteredTasks = await _taskService.GetSortedTasks(filteredTasks, sortOrder).ToListAsync();
+            var sortedAndFilteredTasks = await _taskService.GetSortedTasks(filteredTasks, sortViewModel).ToListAsync();
 
             var userTasks = _mapper.Map<List<TaskViewModel>>(sortedAndFilteredTasks);
 
             var viewModel = new TaskViewModel()
             {
-                SortViewModel = new SortViewModel(sortOrder),
+                SortViewModel = sortViewModel,
                 FilterViewModel = filterViewModel,
                 UserTasks = userTasks
             };
-
-            HttpContext.Session.SetString("SortOrder", ((int)sortOrder).ToString());
 
 			return View(viewModel);
         }
 
         [HttpGet]
-        public IActionResult Create(FilterViewModel filterViewModel)
+        public IActionResult Create(FilterViewModel filterViewModel, SortViewModel sortViewModel)
         {
-            var model = new TaskViewModel { FilterViewModel = filterViewModel };
-
-			var sortOrder = (SortState)Convert.ToInt32(HttpContext.Session.GetString("SortOrder"));
-
-            ViewBag.SortOrder = sortOrder;
+            var model = new TaskViewModel { FilterViewModel = filterViewModel, SortViewModel = sortViewModel };
 
 			return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(TaskViewModel model, FilterViewModel filterViewModel, SortState sortOrder)
+        public async Task<IActionResult> Create(TaskViewModel model, FilterViewModel filterViewModel, SortViewModel sortViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -77,19 +72,19 @@ namespace ToDoList.Controllers
                         selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
                         selectedTaskName = filterViewModel.SelectedTaskName,
                         selectedTaskState = filterViewModel.SelectedTaskState,
-                        sortOrder = sortOrder
+                        selectedSortState = sortViewModel.SelectedSortState
                     })
                 });
             }
 
             model.FilterViewModel = filterViewModel;
-            ViewBag.SortState = sortOrder;
+            model.SortViewModel = sortViewModel;
 
             return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid? id, FilterViewModel filterViewModel)
+        public async Task<IActionResult> Edit(Guid? id, FilterViewModel filterViewModel, SortViewModel sortViewModel)
         {
             if (id == null)
             {
@@ -106,18 +101,17 @@ namespace ToDoList.Controllers
             }
 
             var model = _mapper.Map<TaskViewModel>(userTask);
+
             model.FilterViewModel = filterViewModel;
-
-            var sortOrder = (SortState)Convert.ToInt32(HttpContext.Session.GetString("SortOrder"));
-
-            ViewBag.SortOrder = sortOrder;
+            model.SortViewModel = sortViewModel;
 
             return View(model);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Edit(Guid id, TaskViewModel model, FilterViewModel filterViewModel, SortState sortOrder)
-        {
+        public async Task<IActionResult> Edit(Guid id, TaskViewModel model, FilterViewModel filterViewModel, SortViewModel sortViewModel)
+
+		{
             if (id != model.Id)
             {
                 return NotFound();
@@ -137,19 +131,19 @@ namespace ToDoList.Controllers
                         selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
                         selectedTaskName = filterViewModel.SelectedTaskName,
                         selectedTaskState = filterViewModel.SelectedTaskState,
-                        sortOrder = sortOrder
-                    })
+						selectedSortState = sortViewModel.SelectedSortState
+					})
                 });
             }
 
             model.FilterViewModel = filterViewModel;
-            ViewBag.SortState = sortOrder;
+            model.SortViewModel = sortViewModel;
 
             return View(model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Delete(Guid? id, FilterViewModel filterViewModel)
+        public async Task<IActionResult> Delete(Guid? id, FilterViewModel filterViewModel, SortViewModel sortViewModel)
         {
             if (id == null)
             {
@@ -169,17 +163,15 @@ namespace ToDoList.Controllers
 
             model.TranslatedPriorityLevel = PriorityLevelTranslator.Translate(model.PriorityLevel);
             model.TranslatedTaskState = TaskStateTranslator.Translate(model.TaskState);
+
             model.FilterViewModel = filterViewModel;
-
-            var sortOrder = (SortState)Convert.ToInt32(HttpContext.Session.GetString("SortOrder"));
-
-            ViewBag.SortOrder = sortOrder;
+            model.SortViewModel = sortViewModel;
 
             return View(model);
         }
 
         [HttpDelete, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(Guid id, FilterViewModel filterViewModel, SortState sortOrder)
+        public async Task<IActionResult> DeleteConfirmed(Guid id, FilterViewModel filterViewModel, SortViewModel sortViewModel)
         {
             var result = await _taskService.RemoveAsync(id);
 
@@ -191,7 +183,7 @@ namespace ToDoList.Controllers
                     selectedPriorityLevel = filterViewModel.SelectedPriorityLevel,
                     selectedTaskName = filterViewModel.SelectedTaskName,
                     selectedTaskState = filterViewModel.SelectedTaskState,
-                    sortOrder = sortOrder
+                    selectedSortState = sortViewModel.SelectedSortState
                 })
             });
         }

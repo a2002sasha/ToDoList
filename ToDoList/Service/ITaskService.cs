@@ -11,6 +11,6 @@ namespace ToDoList.Service
 		Task<bool> EditAsync(DataAccess.Model.Task task);
 		Task<bool> RemoveAsync(Guid? taskId);
         IQueryable<DataAccess.Model.Task> GetFilteredTasks(string username, FilterViewModel filterViewModel);
-		IQueryable<DataAccess.Model.Task> GetSortedTasks(IQueryable<DataAccess.Model.Task> tasks, SortState sortOrder = SortState.NameAsc);
+		IQueryable<DataAccess.Model.Task> GetSortedTasks(IQueryable<DataAccess.Model.Task> tasks, SortViewModel sortViewModel);
 	}
 }

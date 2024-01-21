@@ -1,68 +1,68 @@
 ﻿@model ToDoList.ViewModel.TaskViewModel
 
 @{
-	ViewBag.Title = "Створення завдання";
+    ViewBag.Title = "Створення завдання";
 }
 
 <h3>Створити завдання</h3>
 <hr />
 <div class="row">
-	<div class="col-md-4">
-		<form class="post-form" asp-action="Create" method="post"
-			  asp-route-selectedTaskName="@(Model.FilterViewModel!.SelectedTaskName)"
-			  asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
-			  asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
-			  asp-route-sortOrder="@(ViewBag.SortOrder)">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="Name" class="control-label"></label>
-				<input asp-for="Name" class="form-control" />
-				<span asp-validation-for="Name" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Description" class="control-label"></label>
-				<input asp-for="Description" class="form-control" />
-				<span asp-validation-for="Description" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="TaskState" class="control-label"></label>
-				<select asp-for="TaskState" class="form-control">
-					<option value="Created">Створено</option>
-					<option value="InProcess">В процесі</option>
-					<option value="Completed">Виконано</option>
-				</select>
-				<span asp-validation-for="TaskState" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="PriorityLevel" class="control-label"></label>
-				<select asp-for="PriorityLevel" class="form-control">
-					<option value="None">Немає</option>
-					<option value="Low">Низький</option>
-					<option value="Medium">Середній</option>
-					<option value="High">Високий</option>
-				</select>
-				<span asp-validation-for="PriorityLevel" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="EndDate" class="control-label"></label>
-				<input asp-for="EndDate" class="form-control" />
-				<span asp-validation-for="EndDate" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="EndTime" class="control-label"></label>
-				<input asp-for="EndTime" class="form-control" />
-				<span asp-validation-for="EndTime" class="text-danger"></span>
-			</div> <br />
-			<div class="form-group">
-				<input type="submit" value="Створити" class="btn btn-primary" />
-			</div>
-		</form> <br />
-		<a asp-action="Index"
-			  asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
-			  asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
-			  asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
-		      asp-route-sortOrder="@(ViewBag.SortOrder)">
-			<input type="button" value="Назад до списку завдань"/>
-		</a>
-	</div>
+    <div class="col-md-4">
+        <form class="post-form" asp-action="Create" method="post"
+              asp-route-selectedTaskName="@(Model.FilterViewModel!.SelectedTaskName)"
+              asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+              asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
+              asp-route-selectedSortState="@(Model.SortViewModel.SelectedSortState)">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskState" class="control-label"></label>
+                <select asp-for="TaskState" class="form-control">
+                    <option value="Created">Створено</option>
+                    <option value="InProcess">В процесі</option>
+                    <option value="Completed">Виконано</option>
+                </select>
+                <span asp-validation-for="TaskState" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PriorityLevel" class="control-label"></label>
+                <select asp-for="PriorityLevel" class="form-control">
+                    <option value="None">Немає</option>
+                    <option value="Low">Низький</option>
+                    <option value="Medium">Середній</option>
+                    <option value="High">Високий</option>
+                </select>
+                <span asp-validation-for="PriorityLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndTime" class="control-label"></label>
+                <input asp-for="EndTime" class="form-control" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div> <br />
+            <div class="form-group">
+                <input type="submit" value="Створити" class="btn btn-primary" />
+            </div>
+        </form> <br />
+        <a asp-action="Index"
+           asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
+           asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
+           asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
+           asp-route-selectedSortState="@(Model.SortViewModel.SelectedSortState)">
+            <input type="button" value="Назад до списку завдань" />
+        </a>
+    </div>
 </div>

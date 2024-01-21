@@ -12,7 +12,7 @@
               asp-route-selectedTaskName="@(Model.FilterViewModel!.SelectedTaskName)"
               asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
               asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
-              asp-route-sortOrder="@(ViewBag.SortOrder)">
+              asp-route-selectedSortState="@(Model.SortViewModel.SelectedSortState)">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -62,7 +62,7 @@
            asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
            asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
            asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
-           asp-route-sortOrder="@(ViewBag.SortOrder)">
+           asp-route-selectedSortState="@(Model.SortViewModel.SelectedSortState)">
             <input type="button" value="Назад до списку завдань" />
         </a>
     </div>

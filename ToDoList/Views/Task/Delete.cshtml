@@ -57,7 +57,7 @@
                   asp-route-selectedTaskName="@(Model.FilterViewModel!.SelectedTaskName)"
                   asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
                   asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
-                  asp-route-sortOrder="@(ViewBag.SortOrder)">
+                  asp-route-selectedSortState="@(Model.SortViewModel.SelectedSortState)">
                 <input type="hidden" asp-for="Id" />
                 <input type="submit" value="Видалити" />
             </form>
@@ -67,7 +67,7 @@
                asp-route-selectedTaskName="@(Model.FilterViewModel.SelectedTaskName)"
                asp-route-selectedTaskState="@(Model.FilterViewModel.SelectedTaskState)"
                asp-route-selectedPriorityLevel="@(Model.FilterViewModel.SelectedPriorityLevel)"
-               asp-route-sortOrder="@(ViewBag.SortOrder)">
+               asp-route-selectedSortState="@(Model.SortViewModel.SelectedSortState)">
                 <input type="button" value="Назад до списку завдань" />
             </a>
         </div>

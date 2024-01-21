@@ -91,9 +91,9 @@ namespace ToDoList.Service
             return tasks;
 		}
 
-		public IQueryable<DataAccess.Model.Task> GetSortedTasks(IQueryable<DataAccess.Model.Task> tasks, SortState sortOrder = SortState.NameAsc)
+		public IQueryable<DataAccess.Model.Task> GetSortedTasks(IQueryable<DataAccess.Model.Task> tasks, SortViewModel sortViewModel)
 		{
-			tasks = sortOrder switch
+			tasks = sortViewModel.SelectedSortState switch
 			{
 				SortState.NameDesc => tasks.OrderByDescending(s => s.Name),
 				SortState.DescriptionAsc => tasks.OrderBy(s => s.Description),
@@ -106,7 +106,7 @@ namespace ToDoList.Service
 				SortState.DateDesc => tasks.OrderByDescending(s => s.EndDate),
 				SortState.TimeAsc => tasks.OrderBy(s => s.EndTime),
 				SortState.TimeDesc => tasks.OrderByDescending(s => s.EndTime),
-				_ => tasks.OrderBy(s => s.Name)
+				_ => tasks.OrderBy(s => s.TaskState)
 			};
 
 			return tasks;
