@@ -15,8 +15,6 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddScoped<ITaskService, TaskService>();
 
-builder.Services.AddSession();
-
 builder.Services.AddDbContext<ToDoContext>(option =>
 {
 	option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -47,8 +45,6 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseSession();
-
 app.UseRouting();
 
 app.UseCookiePolicy();
